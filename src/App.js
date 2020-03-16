@@ -1,6 +1,8 @@
 import "./App.css";
 
 import React, { Component } from "react";
+import UsersForm from "./components/UsersForm";
+import UserInfo from "./components/UserInfo";
 
 export class App extends Component {
   constructor(props) {
@@ -27,66 +29,32 @@ export class App extends Component {
           email: "stephen@email.com",
           gen: 7
         }
-      ],
-      name: '',
-      email: '',
-      gen: ''
+      ]
     };
   }
 
-  handleChange = (e) => {
+  addNewUser = newUser => {
     this.setState({
-      [e.target.name] : e.target.value
+      users: [...this.state.users, newUser]
     });
-    console.log(this.state.name);
-  }
-
-  handleSubmit = (e) => {
-    e.preventDefault();
-    const newUser = {
-      name: this.state.name,
-      email: this.state.email,
-      gen: this.state.gen
-    }
-    this.setState({
-      users: [...this.state.users, newUser],
-      name: '',
-      email: '',
-      gen: ''
-    })
-  }
+  };
 
   render() {
     return (
       <div className="App">
         {/* <h1>FOOTBALLERS DATABASE</h1> */}
-        <form onSubmit={this.handleSubmit} className="App__user-form">
-          <div className="form-control">
-            <label>Name</label>
-            <input type="text" name="name" value={this.state.name} onChange={this.handleChange} />
-          </div>
-          <div className="form-control">
-            <label>Email</label>
-            <input type="email" name="email" value={this.state.email} onChange={this.handleChange} />
-          </div>
-          <div className="form-control">
-            <label>Gen</label>
-            <input type="number" name="gen" value={this.state.gen} onChange={this.handleChange} />
-          </div>
-          <div>
-            <button type="submit">Add user</button>
-          </div>
-        </form>
+        <UsersForm addUser={this.addNewUser} />
         <div className="App__user-info">
-        {this.state.users.map(item => {
-          return (
-            <div>
-              <h4>Name: {item.name}</h4>
-              <p>Email: {item.email}</p>
-              <p>Gen: {item.gen}</p>
-            </div>
-          );
-        })}
+          {this.state.users.map((item, index) => {
+            return (
+              <UserInfo
+                key={index}
+                name={item.name}
+                email={item.email}
+                gen={item.gen}
+              />
+            );
+          })}
         </div>
       </div>
     );
