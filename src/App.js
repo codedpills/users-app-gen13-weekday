@@ -1,43 +1,20 @@
 import "./App.css";
 
 import React, { Component } from "react";
+import { connect } from 'react-redux';
+import { addUser, deleteUser } from './store/usersActions';
 import UsersForm from "./components/UsersForm";
 import UserInfo from "./components/UserInfo";
 
 export class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      users: [
-        {
-          name: "Ahmed Zaky",
-          email: "ahmed@email.com",
-          gen: 1
-        },
-        {
-          name: "Emmanuel Adebayor",
-          email: "emmanuel@email.com",
-          gen: 4
-        },
-        {
-          name: "Asamoah Gyan",
-          email: "asamoah@email.com",
-          gen: 7
-        },
-        {
-          name: "Stephen Appiah",
-          email: "stephen@email.com",
-          gen: 7
-        }
-      ]
-    };
-  }
 
   addNewUser = newUser => {
-    this.setState({
-      users: [...this.state.users, newUser]
-    });
+    this.props.addUser(newUser)
   };
+
+  deleteUser = user_id => {
+    this.props.deleteUser(user_id);
+  }
 
   render() {
     return (
@@ -45,13 +22,15 @@ export class App extends Component {
         {/* <h1>FOOTBALLERS DATABASE</h1> */}
         <UsersForm addUser={this.addNewUser} />
         <div className="App__user-info">
-          {this.state.users.map((item, index) => {
+          {this.props.users.map((item) => {
             return (
               <UserInfo
-                key={index}
+                key={item.id}
+                id={item.id}
                 name={item.name}
                 email={item.email}
                 gen={item.gen}
+                removeUser={this.deleteUser}
               />
             );
           })}
@@ -61,4 +40,13 @@ export class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+  users: state.users
+});
+
+const mapDispatchToProps = {
+  addUser: addUser,
+  deleteUser: deleteUser
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
