@@ -1,6 +1,8 @@
 import React, { Component } from "react";
-import { connect } from 'react-redux';
-import { editUser } from '../store/usersActions';
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { firestoreConnect } from "react-redux-firebase";
+import { editUser } from "../store/usersActions";
 
 export class EditForm extends Component {
   constructor(props) {
@@ -8,31 +10,31 @@ export class EditForm extends Component {
     this.state = {
       name: props.user.name,
       email: props.user.email,
-      gen: props.user.gen
+      gen: props.user.gen,
     };
-    this.id = props.match.params.id
+    this.id = props.match.params.id;
   }
 
-  handleChange = e => {
+  handleChange = (e) => {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
     const updatedInfo = {
       name: this.state.name,
       email: this.state.email,
-      gen: this.state.gen
+      gen: this.state.gen,
     };
     this.props.editUser(this.id, updatedInfo);
     this.setState({
       name: "",
       email: "",
-      gen: ""
+      gen: "",
     });
-    this.props.history.push('/');
+    this.props.history.push("/");
   };
 
   render() {
@@ -74,11 +76,16 @@ export class EditForm extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  user: state.users.users.find(user => user.id === ownProps.match.params.id)
+  user: state.firestore.ordered.users.find(
+    (user) => user.id === ownProps.match.params.id
+  ),
 });
 
 const mapDispatchToProps = {
-  editUser: editUser
-}
+  editUser: editUser,
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditForm);
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  firestoreConnect(["users"])
+)(EditForm);
