@@ -22,14 +22,14 @@ export const addUser = (user) => {
 export const deleteUser = (user_id) => {
   return (dispatch, getState, { getFirestore }) => {
     let firestore = getFirestore();
-    dispatch({type: actionTypes.ACTION_PENDING})
+    dispatch({ type: actionTypes.ACTION_PENDING });
     firestore
       .collection("users")
       .doc(user_id)
       .delete()
-      .then(res => {
+      .then((res) => {
         console.log(res);
-        dispatch({type: actionTypes.DELETE_USER_SUCCESS})
+        dispatch({ type: actionTypes.DELETE_USER_SUCCESS });
       })
       .catch((error) =>
         dispatch({ type: actionTypes.DELETE_USER_ERROR, payload: error })
@@ -38,9 +38,16 @@ export const deleteUser = (user_id) => {
 };
 
 export const editUser = (user_id, updated_info) => {
-  return {
-    type: "EDIT_USER",
-    user_id: user_id,
-    updated_info: updated_info,
+  return (dispatch, getState, { getFirestore }) => {
+    let firestore = getFirestore();
+    dispatch({ type: actionTypes.ACTION_PENDING });
+    firestore
+      .collection("users")
+      .doc(user_id)
+      .update(updated_info)
+      .then((res) => dispatch({ type: actionTypes.EDIT_USER_SUCCESS }))
+      .catch((err) =>
+        dispatch({ type: actionTypes.EDIT_USER_ERROR, payload: err })
+      );
   };
 };
