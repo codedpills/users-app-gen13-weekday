@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { connect } from 'react-redux';
 import { signUpWithEmail } from '../store/authActions';
 
@@ -23,6 +23,10 @@ class Signup extends Component {
   };
   render() {
     const { username, email, password } = this.state;
+    const {auth} = this.props;
+    if (auth.isLoaded && !auth.isEmpty) {
+        return <Redirect to="/" />
+    }
     return (
       <>
         <h3>Sign up Here</h3>
@@ -64,8 +68,12 @@ class Signup extends Component {
   }
 }
 
+const mapStateToProps = (state) => ({
+    auth: state.firebase.auth
+})
+
 const mapDispatchToProps = {
     signUpWithEmail
 }
 
-export default connect(null, mapDispatchToProps)(Signup);
+export default connect(mapStateToProps, mapDispatchToProps)(Signup);
