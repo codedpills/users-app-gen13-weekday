@@ -1,8 +1,9 @@
-import firebase from 'firebase/app';
-import 'firebase/firestore';
+import firebase from "firebase/app";
+import "firebase/firestore";
+import "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: process.env.REACT_USERS_API_KEY,
+  apiKey: "AIzaSyDkskR7DGP7EcZmK6GvMEEyGf6xhgCtIeM",
   authDomain: "react-users-f4198.firebaseapp.com",
   databaseURL: "https://react-users-f4198.firebaseio.com",
   projectId: "react-users-f4198",
@@ -13,6 +14,6 @@ const firebaseConfig = {
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-firebase.firestore()
+firebase.firestore();
 
 export default firebase;
