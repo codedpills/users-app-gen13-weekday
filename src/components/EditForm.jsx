@@ -3,6 +3,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { firestoreConnect } from "react-redux-firebase";
 import { editUser } from "../store/usersActions";
+import { Redirect } from "react-router-dom";
 
 export class EditForm extends Component {
   constructor(props) {
@@ -38,6 +39,10 @@ export class EditForm extends Component {
   };
 
   render() {
+    const {auth} = this.props;
+    if(auth.isLoaded && auth.isEmpty) {
+      return <Redirect to="/login" />
+    }
     return (
       <form onSubmit={this.handleSubmit} className="App__user-form">
         <div className="form-control">
@@ -79,6 +84,7 @@ const mapStateToProps = (state, ownProps) => ({
   user: state.firestore.ordered.users.find(
     (user) => user.id === ownProps.match.params.id
   ),
+  auth: state.firebase.auth
 });
 
 const mapDispatchToProps = {

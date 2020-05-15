@@ -5,8 +5,10 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { firestoreConnect } from "react-redux-firebase";
 import { addUser, deleteUser } from "./store/usersActions";
+import { signOut } from "./store/authActions";
 import UsersForm from "./components/UsersForm";
 import UserInfo from "./components/UserInfo";
+import { Redirect } from "react-router-dom";
 
 export class App extends Component {
   addNewUser = (newUser) => {
@@ -18,7 +20,10 @@ export class App extends Component {
   };
 
   render() {
-    const { requesting, requested, users } = this.props;
+    const { requesting, requested, users, auth } = this.props;
+    if (auth.isLoaded && auth.isEmpty) {
+      return <Redirect to="/login" />
+    }
 
     const whatToDisplay =
       requesting.users === true ? (
@@ -44,6 +49,7 @@ export class App extends Component {
       <div className="App">
         <UsersForm addUser={this.addNewUser} />
         <div className="App__user-info">{whatToDisplay}</div>
+        <a onClick={this.props.signOut} href="">Sign out</a>
       </div>
     );
   }
@@ -53,11 +59,13 @@ const mapStateToProps = (state) => ({
   users: state.firestore.ordered.users,
   requesting: state.firestore.status.requesting,
   requested: state.firestore.status.requested,
+  auth: state.firebase.auth
 });
 
 const mapDispatchToProps = {
   addUser: addUser,
   deleteUser: deleteUser,
+  signOut
 };
 
 export default compose(
